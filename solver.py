@@ -223,7 +223,7 @@ if __name__ == "__main__":
     m.faces['Y'].rotate_clockwise()
     m.faces['w'].rotate_clockwise()
     m.faces['r'].rotate_clockwise()
-    #m.faces['G'].rotate_clockwise()
+    m.faces['G'].rotate_clockwise()
     #m.faces['r'].rotate_anticlockwise()
     #m.faces['g'].rotate_anticlockwise()
     s = Solver()

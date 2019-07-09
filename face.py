@@ -5,6 +5,7 @@ import re
 class Face:
     
     def __init__(self,char):
+        self.colour = char
         self.facets = []
         self.connected_faces = []
         for i in range(10):
@@ -86,6 +87,37 @@ class Face:
                 connected_face.set_edge_facets(i,facets)
                 return
         raise Exception('Cannot find common edge')
+
+    def opposite_face(self):
+        connected_face = self.connected_faces[0]
+        if not connected_face:
+            raise Exception('No connected face')
+        connected_edge = -1
+        for i in range(5):
+            if connected_face.connected_faces[i] == self:
+                connected_edge = i
+                break
+        if connected_edge == -1:
+            raise Exception('No connected edge')
+        x = connected_edge + 2
+        if x > 4:
+            x -= 5
+        underside_face = connected_face.connected_faces[x]
+        if not underside_face:
+            raise Exception('No underside face')
+        underside_edge = -1
+        for i in range(5):
+            if underside_face.connected_faces[i] == connected_face:
+                underside_edge = i
+                break
+        if underside_edge == -1:
+            raise Exception('No underside edge')
+        y = underside_edge + 3
+        if y > 4:
+            y -= 5
+        opposite_face = underside_face.connected_faces[y]
+        return opposite_face
+
 
     def parse(self,string):
         if re.match(r'\[.\]',string):
