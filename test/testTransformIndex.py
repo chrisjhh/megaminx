@@ -1,8 +1,24 @@
 import unittest
 from megaminx.megaminx import Megaminx
 from megaminx.TransformIndex import TransformIndex
+from pstats import Stats
+import cProfile
 
 class TestTransformIndex(unittest.TestCase):
+
+    # def setUp(self):
+    #     """init each test"""
+    #     self.pr = cProfile.Profile()
+    #     self.pr.enable()
+    #     print "\n<<<---"
+
+    # def tearDown(self):
+    #     """finish any test"""
+    #     p = Stats (self.pr)
+    #     p.strip_dirs()
+    #     p.sort_stats ('cumtime')
+    #     p.print_stats ()
+    #     print "\n--->>>"
 
     def test_TransformIndex(self):
         cache = TransformIndex()

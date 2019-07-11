@@ -2,16 +2,18 @@
 
 from diskcache import Index
 from .megaminx import Megaminx
+m1 = Megaminx()
+m2 = Megaminx()
 
 class TransformIndex(Index):
 
-    def __contains__(self,item):
-        if Index.__contains__(self,item):
-            return True
-        if self._has_colour_variant(item):
-            return True
-        if self._has_transformed_variant(item):
-            return True
+    # def __contains__(self,item):
+    #     if Index.__contains__(self,item):
+    #         return True
+    #     if self._has_colour_variant(item):
+    #         return True
+    #     if self._has_transformed_variant(item):
+    #         return True
 
     def __getitem__(self,key):
         try:
@@ -27,30 +29,33 @@ class TransformIndex(Index):
             return value
         raise KeyError('No matching entry %s' % key)
 
-    def _has_colour_variant(self,item):
-        m = Megaminx()
-        m.parse(item)
-        xforms = m.get_colour_transforms()
-        for xform in xforms:
-            tstate = m.transformed_state(xform)
-            if Index.__contains__(self,tstate):
-                return True
-        return False
+    # def _has_colour_variant(self,item):
+    #     global m2
+    #     m = m2
+    #     m.parse(item)
+    #     xforms = m.get_colour_transforms()
+    #     for xform in xforms:
+    #         tstate = m.transformed_state(xform)
+    #         if Index.__contains__(self,tstate):
+    #             return True
+    #     return False
 
-    def _has_transformed_variant(self,item):
-        m = Megaminx()
-        m.parse(item)
-        xforms = m.get_transforms()
-        for xform in xforms:
-            tstate = m.transformed_state(xform)
-            if Index.__contains__(self,tstate):
-                return True
-            if self._has_colour_variant(tstate):
-                return True
-        return False
+    # def _has_transformed_variant(self,item):
+    #     global m1
+    #     m = m1
+    #     m.parse(item)
+    #     xforms = m.get_transforms()
+    #     for xform in xforms:
+    #         tstate = m.transformed_state(xform)
+    #         if Index.__contains__(self,tstate):
+    #             return True
+    #         if self._has_colour_variant(tstate):
+    #             return True
+    #     return False
 
     def _get_colour_variant(self,key):
-        m = Megaminx()
+        global m2
+        m = m2
         m.parse(key)
         xforms = m.get_colour_transforms()
         for xform in xforms:
@@ -63,7 +68,8 @@ class TransformIndex(Index):
         return None
 
     def _get_transformed_variant(self,key):
-        m = Megaminx()
+        global m1
+        m = m1
         m.parse(key)
         xforms = m.get_transforms()
         for xform in xforms:

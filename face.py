@@ -14,11 +14,13 @@ class Face:
             self.connected_faces.append(None)
 
     def __str__(self):
-        val = ''.join(self.facets)
-        # Use shorthand if all facets are the same
-        if re.match(r'(.)\1{9}',val):
-            val = '[' + val[0] + ']'
-        return val
+        if not hasattr(self,'_state'):
+            val = ''.join(self.facets)
+            # Use shorthand if all facets are the same
+            if re.match(r'(.)\1{9}',val):
+                val = '[' + val[0] + ']'
+            self._state = val
+        return self._state
 
     def __repr__(self):
         return self.__str__()
@@ -27,6 +29,8 @@ class Face:
         self.connected_faces[edge] = face
 
     def rotate_clockwise(self):
+        if hasattr(self,'_state'):
+            del self._state
         # Get the last two elements and put them at the start
         end = self.facets[-2:]
         self.facets[-2:] = []
@@ -40,6 +44,8 @@ class Face:
                 before = safe
 
     def rotate_anticlockwise(self):
+        if hasattr(self,'_state'):
+            del self._state
         # Get the first two elements and put them at the end
         start = self.facets[:2]
         self.facets[:2] = []
@@ -60,6 +66,8 @@ class Face:
         return facets
 
     def set_edge_facets(self,edge,facets):
+        if hasattr(self,'_state'):
+            del self._state
         start = edge * 2
         if edge < 4:
             self.facets[start:start+3] = facets
@@ -125,6 +133,8 @@ class Face:
 
 
     def parse(self,string):
+        if hasattr(self,'_state'):
+            del self._state
         if re.match(r'\[.\]',string):
             for i in range(10):
                 self.facets[i] = string[1]
