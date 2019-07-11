@@ -1,29 +1,31 @@
 """Class to represent a rotational transofrm of the megaminx"""
 import re
 
-re1 = re.compile(r'(\w)')
-re2 = re.compile(r':(\w)')
+#re1 = re.compile(r'(\w)')
+#re2 = re.compile(r':(\w)')
 
 class Transform(dict):
     
     def transform(self, string):
-        global re1, re2
-        s = re1.sub(r':\1',string)
-        for k in self.keys():
-            if len(k) > 1:
-                continue
-            s = s.replace(':%s' % k, self[k])
-            #s = re.sub(':%s' % k, self[k],s)
-        s = re2.sub(r'\1',s)
-        return s
+        res = []
+        for c in string:
+            try:
+                res.append(self[c])
+            except(KeyError):
+                res.append(c)
+        return ''.join(res)
     
     def invert(self, string):
-        global re1, re2
-        s = re1.sub(r':\1',string)
-        for k in self.keys():
-            if len(k) > 1:
-                continue
-            #s = re.sub(':%s' % self[k], k, s)
-            s = s.replace(':%s' % self[k], k)
-        s = re2.sub(r'\1',s)
-        return s
+        res = []
+        if not hasattr(self,'_inverse'):
+            self._inverse = {}
+            for k in self.keys():
+                if len(k) > 1:
+                    continue
+                self._inverse[self[k]] = k
+        for c in string:
+            try:
+                res.append(self._inverse[c])
+            except(KeyError):
+                res.append(c)
+        return ''.join(res)
