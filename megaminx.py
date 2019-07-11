@@ -59,7 +59,7 @@ class Megaminx:
 
     def get_colour_transforms(self):
         # Each colour face could be replaced with any other colour as long
-        # as the topological arangement of colour stays the same
+        # as the topological arangement of colours stays the same
         top = self.colours[0]
         bot = self.faces[top].opposite_face().colour
         topfaces = [f.colour for f in self.faces[top].connected_faces]

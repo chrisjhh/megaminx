@@ -70,6 +70,40 @@ class TestTransforms(unittest.TestCase):
         solution = t.invert(tsolution)
         self.assertEqual(solution,'r> w<')
 
+    def test_tranformed_cache_lookup_colours(self):
+      global solved
+      m = Megaminx()
+      s = Solver()
+      m.faces['w'].rotate_clockwise()
+      m.faces['r'].rotate_anticlockwise()
+      state = str(m)
+      #print(state)
+      solution = s.cache.get(state).strip()
+      self.assertEqual(solution,'r> w<')
+      m2 = Megaminx()
+      m2.parse(state)
+      m2.apply(solution)
+      self.assertEqual(str(m2), solved)
+      for t in m.get_colour_transforms():
+        tstate = m.transformed_state(t)
+        #print(tstate)
+        tsolution = t.transform(solution)
+        #print(tsolution)
+        m2.parse(solved)
+        m2.unapply(tsolution)
+        self.assertEqual(tstate,str(m2))
+      for t in m.get_colour_transforms():
+        tstate = m.transformed_state(t)
+        tsolution = t.transform(solution)
+        m2.parse(tstate)
+        m2.apply(tsolution)
+        self.assertEqual(str(m2), solved)
+      for t in m.get_colour_transforms():
+        tstate = m.transformed_state(t)
+        tsolution = s.cache.get(tstate).strip()
+        solution = t.invert(tsolution)
+        self.assertEqual(solution,'r> w<')
+
 
 if __name__ == '__main__':
     unittest.main()
