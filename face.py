@@ -39,7 +39,6 @@ class Face:
                 self.set_connected_edge_facets(i,before)
                 before = safe
 
-
     def rotate_anticlockwise(self):
         # Get the first two elements and put them at the end
         start = self.facets[:2]
@@ -87,6 +86,12 @@ class Face:
                 connected_face.set_edge_facets(i,facets)
                 return
         raise Exception('Cannot find common edge')
+
+    def connecting_edge(self,col):
+        for i in range(5):
+            if self.connected_faces[i].colour == col:
+                return i
+        return -1
 
     def opposite_face(self):
         connected_face = self.connected_faces[0]
