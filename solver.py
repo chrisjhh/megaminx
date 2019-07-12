@@ -216,16 +216,16 @@ def report(result):
 if __name__ == "__main__":
     m = megaminx.Megaminx()
     #solve(str(m))
-    #m.faces['w'].facets[6] = 'Y'
-    #m.faces['p'].facets[0] = 'w'
-    #m.faces['Y'].facets[2] = 'p'
-    m.faces['w'].rotate_clockwise()
-    m.faces['x'].rotate_clockwise()
-    m.faces['Y'].rotate_clockwise()
-    m.faces['w'].rotate_clockwise()
-    m.faces['r'].rotate_clockwise()
-    m.faces['G'].rotate_clockwise()
-    m.faces['r'].rotate_anticlockwise()
+    m.faces['w'].facets[6] = 'Y'
+    m.faces['p'].facets[0] = 'w'
+    m.faces['Y'].facets[2] = 'p'
+    # m.faces['w'].rotate_clockwise()
+    # m.faces['x'].rotate_clockwise()
+    # m.faces['Y'].rotate_clockwise()
+    # m.faces['w'].rotate_clockwise()
+    # m.faces['r'].rotate_clockwise()
+    # m.faces['G'].rotate_clockwise()
+    # m.faces['r'].rotate_anticlockwise()
     #m.faces['g'].rotate_anticlockwise()
     s = Solver()
     s.double_ended_solve(str(m))

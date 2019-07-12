@@ -2,8 +2,47 @@
 
 from diskcache import Index
 from .megaminx import Megaminx
+import functools
 m1 = Megaminx()
 m2 = Megaminx()
+
+def cached(func):
+    @functools.wraps(func)
+    def wrapper(self,key):
+        if not hasattr(self,'_TransformIndex_cache'):
+            self._TransformIndex_cache = {}
+        if key in self._TransformIndex_cache:
+            #print('Read %s from cache' % key)
+            return self._TransformIndex_cache[key]
+        val = func(self,key)
+        self._TransformIndex_cache[key] = val
+        return val
+    return wrapper
+
+def colour_cached(func):
+    @functools.wraps(func)
+    def wrapper(self,key):
+        if not hasattr(self,'_TransformIndex_colour_cache'):
+            self._TransformIndex_colour_cache = {}
+        if key in self._TransformIndex_colour_cache:
+            #print('Read %s from cache' % key)
+            return self._TransformIndex_colour_cache[key]
+        val = func(self,key)
+        self._TransformIndex_colour_cache[key] = val
+        return val
+    return wrapper
+
+def clear_cache(func):
+    @functools.wraps(func)
+    def wrapper(self,*args,**kwargs):
+        if hasattr(self,'_TransformIndex_cache'):
+            #print("Clearing cache")
+            del self._TransformIndex_cache
+        if hasattr(self,'_TransformIndex_colour_cache'):
+            #print("Clearing cache")
+            del self._TransformIndex_colour_cache
+        return func(self,*args,**kwargs)
+    return wrapper
 
 class TransformIndex(Index):
 
@@ -15,6 +54,7 @@ class TransformIndex(Index):
     #     if self._has_transformed_variant(item):
     #         return True
 
+    @cached
     def __getitem__(self,key):
         try:
             value = Index.__getitem__(self,key)
@@ -53,6 +93,8 @@ class TransformIndex(Index):
     #             return True
     #     return False
 
+    #@cached
+    @colour_cached
     def _get_colour_variant(self,key):
         global m2
         m = m2
@@ -83,3 +125,7 @@ class TransformIndex(Index):
             if value is not None:
                 return xform.invert(value)
         return None
+
+    @clear_cache
+    def __setitem__(self,key,value):
+        return Index.__setitem__(self,key,value)
