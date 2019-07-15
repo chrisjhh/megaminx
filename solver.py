@@ -205,7 +205,7 @@ class Solver:
                 return
             steps = self.backward_steps + self.forward_steps
             if  steps > most_steps:
-                print("%d steps" % steps)
+                print("%d steps (%d,%d)" % (steps,self.backward_steps,self.forward_steps))
                 most_steps = steps              
             
 

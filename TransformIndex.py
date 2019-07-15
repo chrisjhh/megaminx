@@ -6,41 +6,33 @@ import functools
 m1 = Megaminx()
 m2 = Megaminx()
 
-def cached(func):
-    @functools.wraps(func)
-    def wrapper(self,key):
-        if not hasattr(self,'_TransformIndex_cache'):
-            self._TransformIndex_cache = {}
-        if key in self._TransformIndex_cache:
-            #print('Read %s from cache' % key)
-            return self._TransformIndex_cache[key]
-        val = func(self,key)
-        self._TransformIndex_cache[key] = val
-        return val
-    return wrapper
+caches = set()
 
-def colour_cached(func):
-    @functools.wraps(func)
-    def wrapper(self,key):
-        if not hasattr(self,'_TransformIndex_colour_cache'):
-            self._TransformIndex_colour_cache = {}
-        if key in self._TransformIndex_colour_cache:
-            #print('Read %s from cache' % key)
-            return self._TransformIndex_colour_cache[key]
-        val = func(self,key)
-        self._TransformIndex_colour_cache[key] = val
-        return val
-    return wrapper
+def cached(cachename='_TransformIndex_cache'):
+    global caches
+    caches.add(cachename)
+    def cached_internal(func):
+        @functools.wraps(func)
+        def wrapper(self,key):
+            if not hasattr(self,cachename):
+                self.__dict__[cachename] = {}
+            cache = self.__dict__[cachename]
+            if key in cache:
+                #print('Read %s from cache' % key)
+                return cache[key]
+            val = func(self,key)
+            cache[key] = val
+            return val
+        return wrapper
+    return cached_internal
 
 def clear_cache(func):
     @functools.wraps(func)
     def wrapper(self,*args,**kwargs):
-        if hasattr(self,'_TransformIndex_cache'):
-            #print("Clearing cache")
-            del self._TransformIndex_cache
-        if hasattr(self,'_TransformIndex_colour_cache'):
-            #print("Clearing cache")
-            del self._TransformIndex_colour_cache
+        global caches
+        for cache in caches:
+            if hasattr(self,cache):
+                del self.__dict__[cache]
         return func(self,*args,**kwargs)
     return wrapper
 
@@ -54,7 +46,7 @@ class TransformIndex(Index):
     #     if self._has_transformed_variant(item):
     #         return True
 
-    @cached
+    @cached()
     def __getitem__(self,key):
         try:
             value = Index.__getitem__(self,key)
@@ -94,7 +86,7 @@ class TransformIndex(Index):
     #     return False
 
     #@cached
-    @colour_cached
+    @cached('_TransformIndex_colour_cache')
     def _get_colour_variant(self,key):
         global m2
         m = m2
